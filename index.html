@@ -8,6 +8,56 @@
     <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen">
     <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen">
+    <script src="jquery.min.js"></script>
+    <script src="Validform.js"></script>
+    <style type="text/css">
+        .valiform-error {
+            border: 1px solid #EC7272 !important;
+        }
+
+        .text-error {
+            color: #EC7272;
+            font-size: 12px;
+        }
+
+        .text-suc {
+            color: #22A71B;
+        }
+
+        .passwordStrength span {
+            display: inline-block;
+            width: 40px;
+            height: 20px;
+            margin: 0 20px;
+            background-color: #d0d0d0;
+            font-size: 12px;
+            line-height: 20px;
+            text-align: center;
+        }
+
+        .passwordStrength .bgStrength {
+            color: #fff;
+            background-color: #71b83d;
+        }
+    </style>
+    <script>
+        $(function () {
+            Validform.formCheck({
+                valiContent: ".form1",
+                submitBtn: ".subBtn",
+                ischeckBtn: "#isCheck",
+                passwordStrength: "#passwordStrength",
+                valiType: ".valiType",
+                isAjax: true,
+                myCallback: function () {
+                    console.log("成功");
+                }
+            });
+            $(".reset").click(function () {
+                Validform.reset(".form1");
+            });
+        });
+    </script>
   </head>
   <body>
     <section class="page-header">
@@ -21,8 +71,103 @@
     <section class="main-content">
       <h1>
 <a id="validform" class="anchor" href="#validform" aria-hidden="true"><span class="octicon octicon-link"></span></a>ValidForm</h1>
-
-<p>表单验证插件</p>
+<form class="form1" action="">
+        <p>
+            <span>*用户名</span>
+            <input class="" type="text" datatype="s6-18" nullmsg="用户名不能为空">
+            <span class="text-error"></span>
+        </p>
+        <p>
+            <span>*密码</span>
+            <input type="password" name="pass1" placeholder="6-20位字母、数字和符号" passwordstrength="passwordStrength" datatype="*6-16" errormsg="密码格式错误" nullmsg="密码不能为空">
+            <span class="text-error"></span>
+        </p>
+        <p id="passwordStrength" class="passwordStrength">
+            <span>弱</span><span>中</span><span>强</span>
+        </p>
+        <p>
+            <span>*确认密码</span>
+            <input type="password" name="pass2" placeholder="6-20位字母、数字和符号" datatype="*6-16" datatype="n6-16" errormsg="密码不一致" nullmsg="密码不能为空" recheck="pass1">
+            <span class="text-error"></span>
+        </p>
+        <p>
+            <span>邮箱</span>
+            <input type="text" datatype="e" errormsg="邮箱格式错误" ignore="ignore">
+            <span class="text-error"></span>
+        </p>
+        <p>
+            <span>*城市</span>
+            <select name="province" datatype="" errormsg="请选择所在城市！">
+                <option value="">请选择城市</option>
+                <option value="1">瑞金市</option>
+            </select>
+            <span class="text-error"></span>
+        </p>
+        <p>
+            <select valitype="valiType" name="">
+                <option datatype="idCode">身份证</option>
+                <option datatype="Pasport">护照</option>
+                <option datatype="Dl">驾驶证</option>
+                <option datatype="Officer">军官证</option>
+            </select>
+            <input type="text" datatype="idCode" ignore="ignore" errormsg="身份证格式错误">
+            <span class="text-error"></span>
+        </p>
+        <p>
+            <label><input id="isCheck" type="checkbox">是否验证以下内容</label>
+        </p>
+        <p>
+            <span>手机号</span>
+            <input type="text" datatype="m" errormsg="电话格式错误" ischeck="ischeck">
+            <span class="text-error"></span>
+        </p>
+        <p>
+            <input class="subBtn" type="submit" value="提交">
+            <input class="reset" type="button" value="重置">
+        </p>
+    </form>
+<h3>插件方法绑定：</h3>
+    <pre>
+		$(function(){
+		    //绑定验证
+		    Validform.formCheck({
+        		valiContent:".form1",      //容器盒子，注意：自己定义
+		        submitBtn:".subBtn",   //提交按钮， 注意：自己定义
+		        ischeckBtn:"#isCheck", //控制判断表单是否验证
+		        isAjax:true,           //指定是否ajax，默认是true。
+                passwordStrength:"#passwordStrength",//密码强度span外框
+		        valiType:".valiType",  //下拉列表框选择验证类型
+        		myCallback: function(){  //回调函数
+		        	console.log("成功");
+		        }
+		    });
+                    //表单重置
+		    Validform.reset(".form1");  //重置方法,".form1"为包含所有表单的容器
+		    //提示：
+		    每个表单后面都有一个class="text-error" 的 span,,如果不需要提示可以不写；
+		});
+	</pre>
+    <h3>插件必须样式：</h3>
+    <pre>
+		.valiform-error {border:1px solid #EC7272!important;}
+		.text-error {color:#EC7272; font-size: 12px;}
+		.text-suc {color:#22A71B;}
+		.passwordStrength span {display: inline-block; width: 40px; height: 20px; margin:0 20px; background-color: #d0d0d0; font-size: 12px; line-height: 20px; text-align: center;} 
+		#passwordStrength .bgStrength {color: #fff; background-color: #71b83d;}
+	</pre>
+    <h3>表单属性绑定：</h3>
+    <p>datatype:绑定验证格式，不绑定不验证</p>
+    <p>errormsg:格式错误提醒内容，默认为“格式错误”</p>
+    <p>nullmsg:提示为空显示内容，默认为“请输入内容”</p>
+    <p>ignore="ignore"：输入内容即验证，不填不验证</p>
+    <p>ischeck="ischeck"：可选验证开关控制的表单</p>
+    <p>valiType = "valiType"：当有需要下拉框选择验证类型的时候给下拉框绑定属性。给option设置datatype属性为对应的验证规则</p>
+    <p>Validform.formCheck(content, submitBtn, isAjax, ischeckBtn, fn), content:最外层form或包含所有表单的元素，submitBtn:提交按钮, isAjax:指定是否是ajax提交, ischeckBtn：控制可选验证开关控制的表单按钮, fn：ajax提交成功回调</p>
+    <p>
+        recheck="": 表单里面经常需要检查两次密码输入是否一致，recheck就是用来指定需要比较的另外一个表单元素。
+        如：recheck="password1"，那么它就会拿当前元素的值跟该表单下，name为"password1"的元素比较。
+    </p>
+    <p>passwordStrength: 设置强度等级父元素的id，目前子元素只支持span标签</p>
 
       <footer class="site-footer">
         <span class="site-footer-owner"><a href="https://github.com/WebApp2016/ValidForm">Validform</a> is maintained by <a href="https://github.com/WebApp2016">WebApp2016</a>.</span>
